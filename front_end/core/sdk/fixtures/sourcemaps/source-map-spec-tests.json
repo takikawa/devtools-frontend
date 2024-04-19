@@ -1,0 +1,573 @@
+{
+  "tests": [
+    {
+      "name": "versionValid",
+      "description": "Test a simple source map with a valid version number",
+      "baseFile": "version-valid.js",
+      "sourceMapFile": "version-valid.js.map",
+      "sourceMapIsValid": true
+    },
+    {
+      "name": "versionMissing",
+      "description": "Test a source map that is missing a version field",
+      "baseFile": "version-missing.js",
+      "sourceMapFile": "version-missing.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "versionNotANumber",
+      "description": "Test a source map with a version field that is not a number",
+      "baseFile": "version-not-a-number.js",
+      "sourceMapFile": "version-not-a-number.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "versionNumericString",
+      "description": "Test a source map with a version field that is a number as a string",
+      "baseFile": "version-numeric-string.js",
+      "sourceMapFile": "version-numeric-string.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "versionTooHigh",
+      "description": "Test a source map with an integer version field that is too high",
+      "baseFile": "version-too-high.js",
+      "sourceMapFile": "version-too-high.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "versionTooLow",
+      "description": "Test a source map with an integer version field that is too low",
+      "baseFile": "version-too-low.js",
+      "sourceMapFile": "version-too-low.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "sourcesMissing",
+      "description": "Test a source map that is missing a necessary sources field",
+      "baseFile": "sources-missing.js",
+      "sourceMapFile": "sources-missing.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "sourcesNotAList1",
+      "description": "Test a source map with a sources field that is not a valid list (string)",
+      "baseFile": "sources-not-a-list-1.js",
+      "sourceMapFile": "sources-not-a-list-1.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "sourcesNotAList2",
+      "description": "Test a source map with a sources field that is not a valid list (object)",
+      "baseFile": "sources-not-a-list-2.js",
+      "sourceMapFile": "sources-not-a-list-2.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "sourcesNotStringOrNull",
+      "description": "Test a source map with a sources list that has non-string and non-null items",
+      "baseFile": "sources-not-string-or-null.js",
+      "sourceMapFile": "sources-not-string-or-null.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "namesMissing",
+      "description": "Test a source map that is missing a necessary names field",
+      "baseFile": "names-missing.js",
+      "sourceMapFile": "names-missing.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "namesNotAList1",
+      "description": "Test a source map with a names field that is not a valid list (string)",
+      "baseFile": "names-not-a-list-1.js",
+      "sourceMapFile": "names-not-a-list-1.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "namesNotAList2",
+      "description": "Test a source map with a names field that is not a valid list (object)",
+      "baseFile": "names-not-a-list-2.js",
+      "sourceMapFile": "names-not-a-list-2.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "namesNotString",
+      "description": "Test a source map with a names list that has non-string items",
+      "baseFile": "names-not-string.js",
+      "sourceMapFile": "names-not-string.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "unrecognizedProperty",
+      "description": "Test a source map that has an extra field not explicitly encoded in the spec",
+      "baseFile": "unrecognized-property.js",
+      "sourceMapFile": "unrecognized-property.js.map",
+      "sourceMapIsValid": true
+    },
+    {
+      "name": "invalidVLQDueToNonBase64Character",
+      "description": "Test a source map that has a mapping with an invalid non-base64 character",
+      "baseFile": "invalid-vlq-non-base64-char.js",
+      "sourceMapFile": "invalid-vlq-non-base64-char.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingNotAString1",
+      "description": "Test a source map that has an invalid mapping that is not a string (number)",
+      "baseFile": "invalid-mapping-not-a-string-1.js",
+      "sourceMapFile": "invalid-mapping-not-a-string-1.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingNotAString2",
+      "description": "Test a source map that has an invalid mapping that is not a string (array)",
+      "baseFile": "invalid-mapping-not-a-string-2.js",
+      "sourceMapFile": "invalid-mapping-not-a-string-2.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentBadSeparator",
+      "description": "Test a source map that uses separator characters not recognized in the spec",
+      "baseFile": "invalid-mapping-bad-separator.js",
+      "sourceMapFile": "invalid-mapping-bad-separator.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithZeroFields",
+      "description": "Test a source map that has the wrong number (zero) of segments fields",
+      "baseFile": "invalid-mapping-segment-with-zero-fields.js",
+      "sourceMapFile": "invalid-mapping-segment-with-zero-fields.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithTwoFields",
+      "description": "Test a source map that has the wrong number (two) of segments fields",
+      "baseFile": "invalid-mapping-segment-with-two-fields.js",
+      "sourceMapFile": "invalid-mapping-segment-with-two-fields.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithThreeFields",
+      "description": "Test a source map that has the wrong number (three) of segments fields",
+      "baseFile": "invalid-mapping-segment-with-three-fields.js",
+      "sourceMapFile": "invalid-mapping-segment-with-three-fields.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithSourceIndexOutOfBounds",
+      "description": "Test a source map that has a source index field that is out of bounds of the sources field",
+      "baseFile": "invalid-mapping-segment-source-index-out-of-bounds.js",
+      "sourceMapFile": "invalid-mapping-segment-source-index-out-of-bounds.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithNameIndexOutOfBounds",
+      "description": "Test a source map that has a name index field that is out of bounds of the names field",
+      "baseFile": "invalid-mapping-segment-name-index-out-of-bounds.js",
+      "sourceMapFile": "invalid-mapping-segment-name-index-out-of-bounds.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithNegativeColumn",
+      "description": "Test a source map that has an invalid negative non-relative column field",
+      "baseFile": "invalid-mapping-segment-negative-column.js",
+      "sourceMapFile": "invalid-mapping-segment-negative-column.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithNegativeSourceIndex",
+      "description": "Test a source map that has an invalid negative non-relative source index field",
+      "baseFile": "invalid-mapping-segment-negative-source-index.js",
+      "sourceMapFile": "invalid-mapping-segment-negative-source-index.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithNegativeOriginalLine",
+      "description": "Test a source map that has an invalid negative non-relative original line field",
+      "baseFile": "invalid-mapping-segment-negative-original-line.js",
+      "sourceMapFile": "invalid-mapping-segment-negative-original-line.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithNegativeOriginalColumn",
+      "description": "Test a source map that has an invalid negative non-relative original column field",
+      "baseFile": "invalid-mapping-segment-negative-original-column.js",
+      "sourceMapFile": "invalid-mapping-segment-negative-original-column.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithNegativeNameIndex",
+      "description": "Test a source map that has an invalid negative non-relative name index field",
+      "baseFile": "invalid-mapping-segment-negative-name-index.js",
+      "sourceMapFile": "invalid-mapping-segment-negative-name-index.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithColumnExceeding32Bits",
+      "description": "Test a source map that has a column field that exceeds 32 bits",
+      "baseFile": "invalid-mapping-segment-column-too-large.js",
+      "sourceMapFile": "invalid-mapping-segment-column-too-large.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithSourceIndexExceeding32Bits",
+      "description": "Test a source map that has a source index field that exceeds 32 bits",
+      "baseFile": "invalid-mapping-segment-source-index-too-large.js",
+      "sourceMapFile": "invalid-mapping-segment-source-index-too-large.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithOriginalLineExceeding32Bits",
+      "description": "Test a source map that has a original line field that exceeds 32 bits",
+      "baseFile": "invalid-mapping-segment-original-line-too-large.js",
+      "sourceMapFile": "invalid-mapping-segment-original-line-too-large.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithOriginalColumnExceeding32Bits",
+      "description": "Test a source map that has an original column field that exceeds 32 bits",
+      "baseFile": "invalid-mapping-segment-original-column-too-large.js",
+      "sourceMapFile": "invalid-mapping-segment-original-column-too-large.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "invalidMappingSegmentWithNameIndexExceeding32Bits",
+      "description": "Test a source map that has a name index field that exceeds 32 bits",
+      "baseFile": "invalid-mapping-segment-name-index-too-large.js",
+      "sourceMapFile": "invalid-mapping-segment-name-index-too-large.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "validMappingFieldsWith32BitMaxValues",
+      "description": "Test a source map that has segment fields with max values representable in 32 bits",
+      "baseFile": "valid-mapping-boundary-values.js",
+      "sourceMapFile": "valid-mapping-boundary-values.js.map",
+      "sourceMapIsValid": true
+    },
+    {
+      "name": "validMappingLargeVLQ",
+      "description": "Test a source map that has a segment field VLQ that is very long but within 32-bits",
+      "baseFile": "valid-mapping-large-vlq.js",
+      "sourceMapFile": "valid-mapping-large-vlq.js.map",
+      "sourceMapIsValid": true
+    },
+    {
+      "name": "validMappingEmptyGroups",
+      "description": "Test a source map with a mapping that has many empty groups",
+      "baseFile": "valid-mapping-empty-groups.js",
+      "sourceMapFile": "valid-mapping-empty-groups.js.map",
+      "sourceMapIsValid": true
+    },
+    {
+      "name": "indexMapInvalidBaseMapings",
+      "description": "Test that an index map cannot also have a regular mappings field",
+      "baseFile": "index-map-invalid-base-mappings.js",
+      "sourceMapFile": "index-map-invalid-base-mappings.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "indexMapInvalidOverlap",
+      "description": "Test that an invalid index map with multiple sections that overlap",
+      "baseFile": "index-map-invalid-overlap.js",
+      "sourceMapFile": "index-map-invalid-overlap.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "indexMapMissingOffset",
+      "description": "Test that an index map that is missing a section offset",
+      "baseFile": "index-map-missing-offset.js",
+      "sourceMapFile": "index-map-missing-offset.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "indexMapMissingOffsetLine",
+      "description": "Test that an index map that is missing a section offset's line field",
+      "baseFile": "index-map-missing-offset-line.js",
+      "sourceMapFile": "index-map-missing-offset-line.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "indexMapMissingOffsetColumn",
+      "description": "Test that an index map that is missing a section offset's column field",
+      "baseFile": "index-map-missing-offset-column.js",
+      "sourceMapFile": "index-map-missing-offset-column.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "indexMapOffsetLineWrongType",
+      "description": "Test that an index map that has an offset line field with the wrong type of value",
+      "baseFile": "index-map-offset-line-wrong-type.js",
+      "sourceMapFile": "index-map-offset-line-wrong-type.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "indexMapOffsetColumnWrongType",
+      "description": "Test that an index map that has an offset column field with the wrong type of value",
+      "baseFile": "index-map-offset-column-wrong-type.js",
+      "sourceMapFile": "index-map-offset-column-wrong-type.js.map",
+      "sourceMapIsValid": false
+    },
+    {
+      "name": "basicMapping",
+      "description": "Test a simple source map that has several valid mappings",
+      "baseFile": "basic-mapping.js",
+      "sourceMapFile": "basic-mapping.js.map",
+      "sourceMapIsValid": true,
+      "testActions": [
+        {
+          "actionType": "checkMapping",
+          "generatedLine": 0,
+          "generatedColumn": 0,
+          "originalSource": "basic-mapping-original.js",
+          "originalLine": 0,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "generatedLine": 0,
+          "generatedColumn": 9,
+          "originalSource": "basic-mapping-original.js",
+          "originalLine": 0,
+          "originalColumn": 9,
+          "mappedName": "foo"
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 15,
+          "originalLine": 1,
+          "originalColumn": 2,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 22,
+          "originalLine": 1,
+          "originalColumn": 9,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 24,
+          "originalLine": 2,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 25,
+          "originalLine": 3,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "generatedLine": 0,
+          "generatedColumn": 34,
+          "originalSource": "basic-mapping-original.js",
+          "originalLine": 3,
+          "originalColumn": 9,
+          "mappedName": "bar"
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 40,
+          "originalLine": 4,
+          "originalColumn": 2,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 47,
+          "originalLine": 4,
+          "originalColumn": 9,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 49,
+          "originalLine": 5,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 50,
+          "originalLine": 6,
+          "originalColumn": 0,
+          "mappedName": "foo"
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 56,
+          "originalLine": 7,
+          "originalColumn": 0,
+          "mappedName": "bar"
+        }
+      ]
+    },
+    {
+      "name": "basicMappingWithIndexMap",
+      "description": "Test a version of basic-mapping.js.map that is split into sections with an index map",
+      "baseFile": "basic-mapping-as-index-map.js",
+      "sourceMapFile": "basic-mapping-as-index-map.js.map",
+      "sourceMapIsValid": true,
+      "testActions": [
+        {
+          "actionType": "checkMapping",
+          "generatedLine": 0,
+          "generatedColumn": 0,
+          "originalSource": "basic-mapping-original.js",
+          "originalLine": 0,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "generatedLine": 0,
+          "generatedColumn": 9,
+          "originalSource": "basic-mapping-original.js",
+          "originalLine": 0,
+          "originalColumn": 9,
+          "mappedName": "foo"
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 15,
+          "originalLine": 1,
+          "originalColumn": 2,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 22,
+          "originalLine": 1,
+          "originalColumn": 9,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 24,
+          "originalLine": 2,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 25,
+          "originalLine": 3,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "generatedLine": 0,
+          "generatedColumn": 34,
+          "originalSource": "basic-mapping-original.js",
+          "originalLine": 3,
+          "originalColumn": 9,
+          "mappedName": "bar"
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 40,
+          "originalLine": 4,
+          "originalColumn": 2,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 47,
+          "originalLine": 4,
+          "originalColumn": 9,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 49,
+          "originalLine": 5,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 50,
+          "originalLine": 6,
+          "originalColumn": 0,
+          "mappedName": "foo"
+        },
+        {
+          "actionType": "checkMapping",
+          "originalSource": "basic-mapping-original.js",
+          "generatedLine": 0,
+          "generatedColumn": 56,
+          "originalLine": 7,
+          "originalColumn": 0,
+          "mappedName": "bar"
+        }
+      ]
+    },
+    {
+      "name": "validMappingNullSources",
+      "description": "Test a source map that has null sources",
+      "baseFile": "valid-mapping-null-sources.js",
+      "sourceMapFile": "valid-mapping-null-sources.js.map",
+      "sourceMapIsValid": true,
+      "testActions": [
+        {
+          "actionType": "checkMapping",
+          "generatedLine": 0,
+          "generatedColumn": 0,
+          "originalSource": null,
+          "originalLine": 0,
+          "originalColumn": 0,
+          "mappedName": null
+        },
+        {
+          "actionType": "checkMapping",
+          "generatedLine": 0,
+          "generatedColumn": 9,
+          "originalSource": null,
+          "originalLine": 0,
+          "originalColumn": 9,
+          "mappedName": "foo"
+        }
+      ]
+    }
+  ]
+}

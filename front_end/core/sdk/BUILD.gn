@@ -163,6 +163,7 @@ ts_library("unittests") {
     "SourceMap.test.ts",
     "SourceMapManager.test.ts",
     "SourceMapScopes.test.ts",
+    "SourceMapSpec.test.ts",
     "StorageBucketsModel.test.ts",
     "StorageKeyManager.test.ts",
     "Target.test.ts",

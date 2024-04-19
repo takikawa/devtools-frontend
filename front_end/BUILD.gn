@@ -106,6 +106,7 @@ group("unittests") {
     "core/protocol_client:unittests",
     "core/root:unittests",
     "core/sdk:unittests",
+    "core/sdk/fixtures/sourcemaps",
     "entrypoints/formatter_worker:unittests",
     "entrypoints/heap_snapshot_worker:unittests",
     "entrypoints/inspector_main:unittests",
