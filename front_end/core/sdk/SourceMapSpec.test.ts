@@ -30,7 +30,7 @@
 const {assert} = chai;
 import type * as Platform from '../platform/platform.js';
 import {assertNotNullOrUndefined} from '../platform/platform.js';
-import { SourceMapV3 } from './SourceMap.js';
+import { SourceMapV3, parseSourceMap } from './SourceMap.js';
 import * as SDK from './sdk.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
@@ -62,21 +62,30 @@ describeWithEnvironment.only('SourceMapSpec', async () => {
     testActions,
     sourceMapIsValid
   }) => {
-    it(`checks mappings for ${sourceMapFile}`, async () => {
+    it(`tests ${sourceMapFile}`, async () => {
       if (!sourceMapIsValid) {
+        // TODO - right now most of the failure scenarios are actually passing
         return;
       }
       
+      // check if a valid sourcemap can be loaded and a SourceMap object created
       const baseFileUrl = baseFile as Platform.DevToolsPath.UrlString;
       const sourceMapFileUrl = sourceMapFile as Platform.DevToolsPath.UrlString;
       const sourceMapContent = await loadSourceMapFromFixture(sourceMapFile);
-
+      
+      assert.doesNotThrow(() => parseSourceMap(JSON.stringify(sourceMapContent)));
+      assert.doesNotThrow(() => new SDK.SourceMap.SourceMap(
+        baseFileUrl, 
+        sourceMapFileUrl, 
+        sourceMapContent
+      ));
+      
+      // check if the mappings are valid
       const sourceMap = new SDK.SourceMap.SourceMap(
         baseFileUrl, 
         sourceMapFileUrl, 
         sourceMapContent);
     
-      
       if (testActions !== undefined) {
         testActions.forEach(({
           actionType,
