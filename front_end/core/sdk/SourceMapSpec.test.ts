@@ -60,18 +60,68 @@ describeWithEnvironment.only('SourceMapSpec', async () => {
     baseFile,
     sourceMapFile,
     testActions,
-    sourceMapIsValid
+    sourceMapIsValid,
+    name
   }) => {
     it(`tests ${sourceMapFile}`, async () => {
-      if (!sourceMapIsValid) {
-        // TODO - right now most of the failure scenarios are actually passing
+      const consoleErrorSpy = sinon.spy(console, 'error');
+      const sourceMapContent = await loadSourceMapFromFixture(sourceMapFile);
+
+      // 1) check if an invalid sourcemap throws on SourceMap instance creation
+      if (!sourceMapIsValid && [
+        'sourcesMissing', 
+        'indexMapMissingOffset'
+      ].includes(name)) {
+        assert.throws(() => new SDK.SourceMap.SourceMap(
+          baseFile as Platform.DevToolsPath.UrlString, 
+          sourceMapFile as Platform.DevToolsPath.UrlString, 
+          sourceMapContent
+        ));
+        
         return;
       }
+
+      // 2) check if an invalid sourcemap throws on mapping creation
+      if (!sourceMapIsValid && [
+        'invalidVLQDueToNonBase64Character', 
+        'invalidMappingNotAString1',
+        'invalidMappingNotAString2',
+        'invalidMappingSegmentBadSeparator',
+        'invalidMappingSegmentWithZeroFields',
+        'invalidMappingSegmentWithTwoFields',
+        'invalidMappingSegmentWithThreeFields'
+      ].includes(name)) {
+        const sourceMap = new SDK.SourceMap.SourceMap(
+          baseFile as Platform.DevToolsPath.UrlString, 
+          sourceMapFile as Platform.DevToolsPath.UrlString, 
+          sourceMapContent
+        );
+        
+        // TODO - findEntry or just mappings should be used here? mappings is the culprit 
+        // but it is called from different other methods e.g: findEntry()
+        sourceMap.mappings();
+        assert.equal(consoleErrorSpy.calledWith("Failed to parse source map"), true);
+
+        return;
+      }
+
+      // 3) check if an invalid sourcemap can have the mapping created
+      if (!sourceMapIsValid) {
+        const sourceMap = new SDK.SourceMap.SourceMap(
+          baseFile as Platform.DevToolsPath.UrlString, 
+          sourceMapFile as Platform.DevToolsPath.UrlString, 
+          sourceMapContent
+        );
+        sourceMap.mappings();
+        // TODO - right now most of the failure scenarios are actually passing
+        assert.equal(consoleErrorSpy.notCalled, true);
+        console.warn('Invalid sourcemap passes basic validation');
+      }
+
       
-      // check if a valid sourcemap can be loaded and a SourceMap object created
+      // 4) check if a valid sourcemap can be parsed and a SourceMap instance created
       const baseFileUrl = baseFile as Platform.DevToolsPath.UrlString;
       const sourceMapFileUrl = sourceMapFile as Platform.DevToolsPath.UrlString;
-      const sourceMapContent = await loadSourceMapFromFixture(sourceMapFile);
       
       assert.doesNotThrow(() => parseSourceMap(JSON.stringify(sourceMapContent)));
       assert.doesNotThrow(() => new SDK.SourceMap.SourceMap(
@@ -79,13 +129,16 @@ describeWithEnvironment.only('SourceMapSpec', async () => {
         sourceMapFileUrl, 
         sourceMapContent
       ));
+
       
-      // check if the mappings are valid
+      // 5) check if the mappings are valid
       const sourceMap = new SDK.SourceMap.SourceMap(
         baseFileUrl, 
         sourceMapFileUrl, 
         sourceMapContent);
-    
+        
+      assert.doesNotThrow(() => sourceMap.findEntry(1, 1));
+      
       if (testActions !== undefined) {
         testActions.forEach(({
           actionType,
