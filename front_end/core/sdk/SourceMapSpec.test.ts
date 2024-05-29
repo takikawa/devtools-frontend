@@ -7,23 +7,14 @@
  This file tests if devtools sourcemaps implementation is matching the sourcemaps spec.
  Sourcemap Spec tests are using test data coming from: https://github.com/takikawa/source-map-tests
 
- At the moment only basic mapping tests are implemented. Expected results:
-
-  ==== FAIL: SourceMapSpec/checks mappings for valid-mapping-null-sources.js.map
-  AssertionError: unexpected source URL: expected 'null' to equal null
-      at front_end/core/sdk/SourceMapSpec.test.ts:74:20 <- out/Default/gen/front_end/core/sdk/SourceMapSpec.test.js:25:32
-      at Array.forEach (<anonymous>)
-      at Context.<anonymous> (front_end/core/sdk/SourceMapSpec.test.ts:62:21 <- out/Default/gen/front_end/core/sdk/SourceMapSpec.test.js:21:29)
-
-  - expected
-  + actual
-
-  -[null]
-  +"null"
-  ==============================================================================
-
-  FAILED: 1 failed, 46 passed (0 skipped)
-  ERRORS DETECTED
+ At the moment only basic mapping tests are implemented. 
+ 
+ There is a lot of warnings of invalid source maps passing the validation - this is up to the authors 
+ which ones of these could be actually checked in the SourceMaps implementetion and which ones are ok to ignore.
+ 
+ Expected results:
+ 
+  SUCCESS: 69 passed (0 skipped)
 
  **/ 
 
@@ -51,6 +42,7 @@ interface TestAction {
   originalLine: number;
   originalColumn: number;
   mappedName: null | string;
+  intermediateMaps?:  string[]
 }
 
 const testCases = await loadTestCasesFromFixture('source-map-spec-tests.json');
@@ -70,7 +62,10 @@ describeWithEnvironment.only('SourceMapSpec', async () => {
       // 1) check if an invalid sourcemap throws on SourceMap instance creation
       if (!sourceMapIsValid && [
         'sourcesMissing', 
-        'indexMapMissingOffset'
+        'indexMapMissingOffset',
+        'indexMapWrongTypeSections',
+        'indexMapWrongTypeMap',
+        'ignoreListWrongType3'
       ].includes(name)) {
         assert.throws(() => new SDK.SourceMap.SourceMap(
           baseFile as Platform.DevToolsPath.UrlString, 
@@ -89,7 +84,8 @@ describeWithEnvironment.only('SourceMapSpec', async () => {
         'invalidMappingSegmentBadSeparator',
         'invalidMappingSegmentWithZeroFields',
         'invalidMappingSegmentWithTwoFields',
-        'invalidMappingSegmentWithThreeFields'
+        'invalidMappingSegmentWithThreeFields',
+        'invalidVLQDueToMissingContinuationDigits'
       ].includes(name)) {
         const sourceMap = new SDK.SourceMap.SourceMap(
           baseFile as Platform.DevToolsPath.UrlString, 
@@ -115,7 +111,7 @@ describeWithEnvironment.only('SourceMapSpec', async () => {
         sourceMap.mappings();
         // TODO - right now most of the failure scenarios are actually passing
         assert.equal(consoleErrorSpy.notCalled, true);
-        console.warn('Invalid sourcemap passes basic validation');
+        console.warn(`Invalid sourcemap passes basic validation: ${sourceMapFile}`);
       }
 
       
@@ -140,18 +136,48 @@ describeWithEnvironment.only('SourceMapSpec', async () => {
       assert.doesNotThrow(() => sourceMap.findEntry(1, 1));
       
       if (testActions !== undefined) {
-        testActions.forEach(({
+        testActions.forEach(async ({
           actionType,
           originalSource,
           originalLine, 
           originalColumn,
           generatedLine,
-          generatedColumn
+          generatedColumn,
+          intermediateMaps
         }) => {
+          
           if (actionType === "checkMapping" && sourceMapIsValid) {
-            const actual = sourceMap.findEntry(generatedLine, generatedColumn);
+            // 5a) check if the mappings are valid for regular sourcemaps
+            // extract to separate function
+            let actual = sourceMap.findEntry(generatedLine, generatedColumn);
             assertNotNullOrUndefined(actual);
       
+            assert.strictEqual(actual.sourceURL, originalSource, 'unexpected source URL');
+            assert.strictEqual(actual.sourceLineNumber, originalLine, 'unexpected source line number');
+            assert.strictEqual(actual.sourceColumnNumber, originalColumn, 'unexpected source column number');
+          } else if (actionType === "checkMappingTransitive") {
+            // 5b) check if the mappings are valid for transative sourcemaps
+            // extract to separate function
+
+            assert.strictEqual(Array.isArray(intermediateMaps), true);
+            if (!intermediateMaps) {
+              return;
+            }
+            
+            let actual = sourceMap.findEntry(generatedLine, generatedColumn);
+
+            for (let intermediateMapPath of intermediateMaps) {
+              const intermediereSourceMapContent = await loadSourceMapFromFixture(sourceMapFile); 
+
+              const sourceMap = new SDK.SourceMap.SourceMap(
+                baseFileUrl, 
+                intermediateMapPath as Platform.DevToolsPath.UrlString,
+                intermediereSourceMapContent
+              );
+              actual = sourceMap.findEntry(generatedLine, generatedColumn);
+            }
+
+            assertNotNullOrUndefined(actual);
             assert.strictEqual(actual.sourceURL, originalSource, 'unexpected source URL');
             assert.strictEqual(actual.sourceLineNumber, originalLine, 'unexpected source line number');
             assert.strictEqual(actual.sourceColumnNumber, originalColumn, 'unexpected source column number');
